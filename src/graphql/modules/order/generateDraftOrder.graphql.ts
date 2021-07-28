@@ -75,7 +75,7 @@ export default {
         const orderGenerator = new OrderGenerator(orderInput, seller, customer, campaignCode);
         try {
           await orderGenerator.generate();
-          set(context, "isDraft", true);
+          context.meta.isDraft = true;
           const draft = orderGenerator.toDraft();
           return {
             order: draft,
@@ -94,7 +94,7 @@ export default {
     },
     Order: {
       items: async (root: IOrder, args: any, context: Context) => {
-        if (get(context, "isDraft")) {
+        if (context.meta.isDraft) {
           return root.items;
         } else {
           return GraphQLHelper.loadManyById(OrderItemLoader, "itemIds")(root, args, context);
