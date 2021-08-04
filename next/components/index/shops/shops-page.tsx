@@ -10,11 +10,17 @@ import { useToast } from "../../../lib/providers/toast-provider";
 import { Spinner } from "../../shared/utilities/spinner";
 import cloneDeep from "lodash/cloneDeep";
 import { Button } from "../../shared/utilities/form/button";
+import { orderBy } from "lodash";
 
 export function ShopsPage() {
   const [openAddress, setOpenAddress] = useState(false);
   let [useAddress, setUseAddress] = useState<{ fullAddress: string; lg: number; lat: number }>();
-  const [shops, setShops] = useState<PublicShop[]>();
+  const [cusomterLoca, setCusomterLoca] = useState<{
+    fullAddress: string;
+    lg: number;
+    lat: number;
+  }>();
+  let [shops, setShops] = useState<PublicShop[]>();
   const toast = useToast();
   useEffect(() => {
     if (navigator.geolocation) {
@@ -52,7 +58,9 @@ export function ShopsPage() {
       ShopService.getAllShop(useAddress.lat, useAddress.lg)
         .then((res) => {
           console.log(res);
-          setShops(cloneDeep(res));
+          let shopsData = res;
+          shops = orderBy(shopsData, (o) => o.distance);
+          setShops(shops);
         })
         .catch((err) => toast.error("Lỗi" + err));
     }
@@ -102,13 +110,15 @@ export function ShopsPage() {
           isOpen={openAddress}
           fullAddress={useAddress?.fullAddress}
           onClose={() => setOpenAddress(false)}
-          onChange={(data) =>
-            setUseAddress({
-              fullAddress: data.fullAddress,
-              lat: data.lat,
-              lg: data.lg,
-            })
-          }
+          onChange={(data) => {
+            if (data.fullAddress) {
+              setUseAddress({
+                fullAddress: data.fullAddress,
+                lat: data.lat,
+                lg: data.lg,
+              });
+            }
+          }}
         />
       )}
     </div>

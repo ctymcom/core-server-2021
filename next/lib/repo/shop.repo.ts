@@ -36,6 +36,9 @@ export interface PublicShop extends BaseModel {
   rating: string;
   ratingQty: string;
   shopCode: string;
+  branchs: {
+    name: string;
+  }[];
 }
 export class ShopRepository extends CrudRepository<Shop> {
   apiName: string = "Shop";
@@ -72,7 +75,7 @@ export class ShopRepository extends CrudRepository<Shop> {
   fanpageId: String
   fanpageName: String
   fanpageImage: String
-  shopCover:String
+  shopCover: String
   shopName: String
   shopLogo: String
   address: String
@@ -154,11 +157,12 @@ export class ShopRepository extends CrudRepository<Shop> {
   `);
 
   async getShopData() {
-    return await this.apollo
-      .query({
-        query: this.gql`query {  getShopData { ${this.fullFragment} }}`,
-      })
-      .then((res) => res.data["getShopData"] as Shop);
+    return await this.query({
+      query: `getShopData { ${this.fullFragment} }`,
+      options: {
+        fetchPolicy: "no-cache",
+      },
+    }).then((res) => res.data["g0"] as Shop);
   }
   async loginAnonymous(shopCode: string) {
     return await this.apollo
@@ -185,6 +189,9 @@ export class ShopRepository extends CrudRepository<Shop> {
           rating
           ratingQty
           shopCode
+          branchs{
+            name
+          }
          }
         }`,
       })
