@@ -1,5 +1,7 @@
-import winston from "winston";
+import _ from "lodash";
 import moment from "moment-timezone";
+import winston from "winston";
+import beautify from "json-beautify";
 
 const logger = winston.createLogger({
   transports: [
@@ -9,83 +11,23 @@ const logger = winston.createLogger({
   ],
   format: winston.format.combine(
     winston.format.timestamp(),
+    winston.format.colorize(),
     winston.format.json(),
-    winston.format.printf((info) => {
-      let message = `[${moment(info.timestamp).format("YYYY-MM-DD HH:mm:ss")}][${info.level}] ${
-        info.message
-      }`;
-      if (info.stack) {
-        message += `\n${info.stack.split("\n")[1]}\n`;
+    winston.format.metadata({
+      fillExcept: ["message", "level", "timestamp", "label", "stack", "_reqId"],
+    }),
+    winston.format.printf(({ timestamp, stack, level, message, metadata, _reqId, ...info }) => {
+      let msg = `[${moment(timestamp).format("YYYY-MM-DD HH:mm:ss")}][${level}]${
+        _reqId ? `[${_reqId}]` : ""
+      } ${message}`;
+      if (!_.isEmpty(metadata)) {
+        msg += `\n${beautify(metadata, null, 2, 120)}`;
       }
-      return message;
+      if (stack) {
+        msg += `\n${_.take(stack.split("\n"), 4).join("\n")}`;
+      }
+      return msg;
     })
   ),
 });
-
-export default logger;
-
-// let transports: any = [
-//   new winston.transports.File({
-//     filename: `logs/error.log`,
-//     level: "error",
-//     options: { flags: "a", mode: 0o755 },
-//   }),
-//   new winston.transports.File({
-//     filename: `logs/combined.log`,
-//     options: { flags: "a", mode: 0o755 },
-//   }),
-//   new winston.transports.File({ filename: "logs/vnpost-error.log", level: "vnpost" }),
-// ];
-// if (process.env.NODE_ENV !== "development") {
-//   transports.push(new winston.transports.Console());
-// } else {
-//   // transports.push(new MongoTransport.MongoDB({ db: configs.winston.db }));
-//   transports.push(
-//     new MongoTransport.MongoDB({
-//       db: configs.winston.db,
-//       collection: "errorlog",
-//       level: "error",
-//       tryReconnect: true,
-//     })
-//   );
-//   transports.push(
-//     new winston.transports.Console({
-//       format: winston.format.combine(winston.format.cli(), winston.format.splat()),
-//     })
-//   );
-// }
-
-// if (process.env.NODE_ENV === "testing") {
-//   transports = [];
-// }
-
-// const Logger = winston.createLogger({
-//   level: configs.winston.level,
-//   levels: { ...winston.config.npm.levels, vnpost: 10 },
-//   format: winston.format.combine(
-//     winston.format.timestamp({
-//       format: "YYYY-MM-DD HH:mm:ss",
-//     }),
-//     winston.format.errors({ stack: true }),
-//     winston.format.splat(),
-//     winston.format.json()
-//   ),
-//   transports,
-// });
-
-// const simpleTimestampFormat = winston.format.combine(
-//   timestampFormat,
-//   winston.format.printf(({ level, message, timestamp, stack }) => {
-//     if (stack) {
-//       // print log trace
-//       return `${timestamp} ${level}: ${message} - ${stack}`;
-//     }
-//     return `[${timestamp}] ${level}: ${message}`;
-//   })
-// );
-// const errorFormat = winston.format.combine(
-//   winston.format.errors({ stack: true }),
-//   timestampFormat,
-//   winston.format.prettyPrint()
-// );
-// export { Logger, simpleTimestampFormat, timestampFormat, errorFormat };
+export { logger };
