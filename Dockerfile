@@ -7,10 +7,10 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-ARG MONGODB_URI
-ARG FIREBASE_VIEW
+ARG MONGO_MAIN
+ARG FIREBASE_WEB_CONFIG
 RUN npm run build-ts
-RUN MONGODB_URI=$MONGODB_URI FIREBASE_VIEW=$FIREBASE_VIEW npm run next:build
+RUN MONGO_MAIN=$MONGO_MAIN FIREBASE_WEB_CONFIG=$FIREBASE_WEB_CONFIG npm run next:build
 
 RUN npm prune --production
 
