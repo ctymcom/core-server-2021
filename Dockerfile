@@ -27,6 +27,7 @@ COPY --from=BUILD_IMAGE /usr/src/app/next/public ./next/public
 COPY --from=BUILD_IMAGE /usr/src/app/package.json ./package.json
 COPY --from=BUILD_IMAGE /usr/src/app/next/.next ./next/.next
 COPY --from=BUILD_IMAGE /usr/src/app/next/next.config.js ./next/next.config.js
+COPY --from=BUILD_IMAGE /usr/src/app/config ./config
 
 EXPOSE 5555
 
