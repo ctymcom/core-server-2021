@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-import { BaseDocument } from "../../base/model";
-import { MainConnection } from "../../helpers/mongo";
+import { BaseDocument } from "../../../base/model";
+import { MainConnection } from "../../../helpers/mongo";
 
 const Schema = mongoose.Schema;
 

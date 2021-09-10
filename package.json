@@ -18,9 +18,7 @@
     "analyze": "cross-env ANALYZE=true next build ./next",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build ./next",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build ./next",
-    "prepare": "husky install",
-    "service:dev": "moleculer-runner --repl --hot dist/services/**/*.service.js",
-    "service:start": "moleculer-runner --instances=max src/services"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@apollo/client": "^3.3.19",
@@ -59,7 +57,6 @@
     "khong-dau": "^2.0.0",
     "lodash": "^4.17.21",
     "minify-graphql-loader": "^1.0.0",
-    "moleculer": "^0.14.15",
     "moment-timezone": "^0.5.31",
     "mongoose": "^5.13.7",
     "mongoose-unique-validator": "^2.0.3",
@@ -122,7 +119,6 @@
     "eslint-config-next": "11.1.0",
     "husky": "^6.0.0",
     "jest": "^24.9.0",
-    "moleculer-repl": "^0.6.6",
     "nodemon": "^2.0.4",
     "postcss": "^8.3.0",
     "prettier": "^2.0.5",
