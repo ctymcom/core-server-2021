@@ -16,13 +16,22 @@ export class GraphqlResolver {
         : undefined;
     };
   }
-  static loadManyById(loader: any, idField: string, option: { defaultValue: any } = {} as any) {
-    return (root: any, args: any, context: Context) => {
-      return root[idField]
-        ? loader
+  static loadManyById(
+    loader: any,
+    idField: string,
+    option: { defaultValue?: any; skipNull?: boolean } = {} as any
+  ) {
+    const { defaultValue, skipNull } = option;
+    return async (root: any, args: any, context: Context) => {
+      let result = root[idField]
+        ? await loader
             .loadMany(root[idField])
-            .then((res: any[]) => res.map((r) => r || option.defaultValue))
-        : undefined;
+            .then((res: any[]) => res.map((r) => r || defaultValue))
+        : [];
+      if (skipNull) {
+        result = result.filter((r: any) => r != null && r != undefined);
+      }
+      return result;
     };
   }
   static requireRoles(roles: string[], defaultValue: any = null) {
