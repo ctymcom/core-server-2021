@@ -31,6 +31,10 @@
     }
   },
   "job": {
+    "isWorker": {
+      "name": "JOB_IS_WORKER",
+      "__format": "boolean"
+    },
     "defines": "JOB_DEFINES",
     "skips": "JOB_SKIPS"
   },

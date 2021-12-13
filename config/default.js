@@ -20,6 +20,7 @@ module.exports = {
     "devMode": false
   },
   "job": {
+    "isWorker": true,
     "defines": "ALL",
     "skips": "NONE"
   },
