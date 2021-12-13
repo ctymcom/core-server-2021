@@ -4,12 +4,14 @@ import { BaseDocument, ModelLoader } from "../../../base/model";
 const Schema = mongoose.Schema;
 
 export type IActivity = BaseDocument & {
+  userId?: string;
   username?: string;
   message?: string;
 };
 
 const activitySchema = new Schema(
   {
+    userId: { type: Schema.Types.ObjectId, require: true },
     username: { type: String },
     message: { type: String },
   },

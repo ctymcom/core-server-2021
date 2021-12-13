@@ -4,6 +4,7 @@ import { get } from "lodash";
 
 import BaseError from "../base/error";
 import Token from "../helpers/token";
+import { ActivityModel } from "./modules/activity/activity.model";
 import { UserRole } from "./modules/user/user.model";
 
 export class Context {
@@ -21,6 +22,12 @@ export class Context {
   }
   get isAdmin() {
     return this.token.role == UserRole.ADMIN;
+  }
+  get isEditor() {
+    return this.token.role == UserRole.EDITOR;
+  }
+  get username() {
+    return get(this.token.payload, "username", this.id);
   }
 
   parseToken(params: any) {
@@ -59,6 +66,10 @@ export class Context {
       if (this.isTokenExpired) throw new BaseError("auth-error", "Token hết hạn", 401);
       throw new BaseError("auth-error", "Không đủ quyền truy cập", 401);
     }
+  }
+
+  log(message: string) {
+    return ActivityModel.create({ userId: this.id, username: this.username, message });
   }
 }
 
