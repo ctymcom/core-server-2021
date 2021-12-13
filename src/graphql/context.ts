@@ -5,7 +5,7 @@ import { get } from "lodash";
 import BaseError from "../base/error";
 import Token from "../helpers/token";
 import { ActivityModel } from "./modules/activity/activity.model";
-import { UserRole } from "./modules/user/user.model";
+import { UserLoader, UserRole } from "./modules/user/user.model";
 
 export class Context {
   public meta: any = {};
@@ -70,6 +70,16 @@ export class Context {
 
   log(message: string) {
     return ActivityModel.create({ userId: this.id, username: this.username, message });
+  }
+
+  async getOwner() {
+    return await UserLoader.load(this.id).then((res) => ({
+      _id: res._id,
+      name: this.username,
+      phone: res.phone,
+      email: res.email,
+      role: res.role,
+    }));
   }
 }
 
