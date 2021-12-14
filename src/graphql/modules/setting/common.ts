@@ -13,7 +13,7 @@ export namespace SettingHelper {
   );
   function getSettingValue(option: { secure: boolean }): (value: ISetting) => any {
     return (setting: ISetting) => {
-      if (setting) return;
+      if (!setting) return;
       if (setting.isPrivate && option.secure) {
         return undefined;
       }
