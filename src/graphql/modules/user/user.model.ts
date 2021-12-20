@@ -32,6 +32,7 @@ const userSchema = new Schema(
 );
 
 userSchema.index({ uid: 1 });
+userSchema.index({ email: 1 }, { unique: true });
 userSchema.index({ name: "text" }, { weights: { name: 10 } } as any);
 
 export const UserModel: mongoose.Model<IUser> = MainConnection.model("User", userSchema);
